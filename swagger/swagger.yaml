@@ -1,0 +1,69 @@
+swagger: "2.0"
+info:
+  description: "LINE × kintoneでアンケートシステムを作ってみよう！"
+  version: "1.0.0"
+  title: "LINE - Kintone Questionary Hands-on (2020.05.11)"
+externalDocs:
+  description: "Event page"
+  url: "https://linedevelopercommunity.connpass.com/event/173295/"
+host: "liff-kintone-questionary.herokuapp.com"
+basePath: "/api"
+
+tags:
+- name: "message"
+  description: "Send a multicast message"
+schemes:
+- "https"
+paths:
+  /sendMulticastMessage:
+    post:
+      tags:
+        - "message"
+      security:
+        - api_key: []
+      summary: "Send a new multicast message"
+      description: ""
+      operationId: "sendMulticastMessage"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            userIds:
+              type: "array"
+              items:
+                type: "string"
+              example: ['userId001', 'userId002', 'userId003']
+            message:
+              $ref: "#/definitions/Message"
+      responses:
+        '200':
+          description: "Success"
+        '400':
+          description: "NG"
+
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "authorization"
+    in: "header"
+definitions:
+  Message:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        description: "message title"
+        example: "Sample title"
+      body:
+        type: "string"
+        description: "message body"
+        example: "Sample body"
+    xml:
+      name: "Message"
