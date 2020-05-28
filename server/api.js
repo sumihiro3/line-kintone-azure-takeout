@@ -58,7 +58,7 @@ APIs
 -------------------------------
 */
 
-router.get('/test', cors(), apiKeyChecker, (req, res, next) => {
+router.get('/test', cors(), (req, res, next) => {
   const param = { test: 'success' }
   res.header('Content-Type', 'application/json; charset=utf-8')
   res.send(param)
