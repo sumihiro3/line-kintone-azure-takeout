@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const fs = require('fs')
 const consola = require('consola')
 const Router = require('express-promise-router')
@@ -31,31 +32,36 @@ router.post('/webhook', line.middleware(lineConfig), (req, res) => {
 })
 
 function handleEvent(event) {
-  const messages = []
-  if (event.type === 'follow') {
-    consola.log('Got follow event!!', event)
-    // handle follow event
-    const message = generateFollowMessage('Thank you for your following')
-    messages.push(message)
-  } else if (event.type !== 'message' || event.message.type !== 'text') {
-    // ignore non-text-message event
-    return Promise.resolve(null)
-  } else {
-    if (
-      event.replyToken === '00000000000000000000000000000000' ||
-      event.replyToken === 'ffffffffffffffffffffffffffffffff'
-    ) {
-      // Connection check on LINE Developers
-      consola.log('Had Connection check!!', event)
-      return Promise.resolve(null)
-    }
-    consola.log('Got Text message!!', event)
-    // messages.push({ type: 'text', text: event.message.text })
-    const message = generateFollowMessage('Thank you for your following')
-    messages.push(message)
+  if (event.replyToken && event.replyToken.match(/^(.)\1*$/)) {
+    return consola.log('Test hook received: ' + JSON.stringify(event.message))
   }
-  // use reply API
-  return lineApiClient.replyMessage(event.replyToken, messages)
+  switch (event.type) {
+    case 'message':
+      const message = event.message
+      switch (message.type) {
+        case 'text':
+          return handleText(message, event.replyToken, event.source)
+        case 'postback':
+          let data = event.postback.data
+          if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
+            data += `(${JSON.stringify(event.postback.params)})`
+          }
+          const msg = { type: 'text', text: `Got postback: ${data}` }
+          return lineApiClient.replyMessage(event.replyToken, msg)
+        default:
+          throw Promise.resolve(null)
+      }
+    case 'follow':
+      const msg = generateFollowMessage('Thank you for your following')
+      return lineApiClient.replyMessage(event.replyToken, msg)
+    default:
+      throw Promise.resolve(null)
+  }
+}
+
+function handleText(message, replyToken) {
+  const echo = { type: 'text', text: message.text }
+  return lineApiClient.replyMessage(replyToken, echo)
 }
 
 function generateFollowMessage(text) {
