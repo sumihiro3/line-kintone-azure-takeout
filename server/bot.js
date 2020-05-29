@@ -60,6 +60,10 @@ function handleEvent(event) {
       }
       return lineApiClient.replyMessage(event.replyToken, replyMessage)
     case 'follow':
+      // 言語取得
+      // kintoneにユーザ登録
+      // リッチメニュー表示
+      // メッセージ表示
       const msg = generateFollowMessage('Thank you for your following')
       return lineApiClient.replyMessage(event.replyToken, msg)
     default:
@@ -69,7 +73,18 @@ function handleEvent(event) {
 
 function handleText(message, replyToken) {
   let replyMessage = { type: 'text', text: message.text }
-  if (message.text === 'メニュー') {
+  if (message.text === 'アクセス') {
+    replyMessage = {
+      type: 'location',
+      title: 'my location',
+      address: '〒150-0002 東京都渋谷区渋谷２丁目２１−１',
+      latitude: 35.65910807942215,
+      longitude: 139.70372892916203
+    }
+  } else if (message.text === '営業時間') {
+    replyMessage = generateBusinessHourMessage()
+  } else if (message.text === 'メニュー') {
+    // categoryを表示
     replyMessage = generateItemsMessage()
   }
   return lineApiClient.replyMessage(replyToken, replyMessage)
@@ -88,7 +103,18 @@ function generateFollowMessage(text) {
   }
 }
 
-function generateItemsMessage(text) {
+function generateBusinessHourMessage() {
+  const msg = JSON.parse(
+    fs.readFileSync('./server/businessHourMessage.json', 'utf8')
+  )
+  return {
+    type: 'flex',
+    altText: '営業時間',
+    contents: msg
+  }
+}
+
+function generateItemsMessage() {
   const msg = JSON.parse(fs.readFileSync('./server/itemsMessage.json', 'utf8'))
   return {
     type: 'flex',

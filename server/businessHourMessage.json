@@ -1,0 +1,107 @@
+{
+  "type": "carousel",
+  "contents": [
+    {
+      "type": "bubble",
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "vertical",
+            "margin": "lg",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "営業時間",
+                "size": "sm",
+                "color": "#aaaaaa"
+              },
+              {
+                "type": "box",
+                "layout": "baseline",
+                "spacing": "sm",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "日曜日 - 火曜日",
+                    "size": "sm"
+                  },
+                  {
+                    "type": "text",
+                    "text": "10:00 - 23:00",
+                    "wrap": true,
+                    "size": "sm",
+                    "align": "end"
+                  }
+                ]
+              },
+              {
+                "type": "box",
+                "layout": "baseline",
+                "spacing": "sm",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "水曜日",
+                    "size": "sm"
+                  },
+                  {
+                    "type": "text",
+                    "text": "休業",
+                    "wrap": true,
+                    "size": "sm",
+                    "align": "end"
+                  }
+                ]
+              },
+              {
+                "type": "box",
+                "layout": "baseline",
+                "spacing": "sm",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "木曜日 - 土曜日",
+                    "size": "sm"
+                  },
+                  {
+                    "type": "text",
+                    "text": "10:00 - 23:00",
+                    "wrap": true,
+                    "size": "sm",
+                    "align": "end"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "button",
+            "style": "link",
+            "height": "sm",
+            "action": {
+              "type": "uri",
+              "label": "WEBSITE",
+              "uri": "https://linecorp.com"
+            }
+          },
+          {
+            "type": "spacer",
+            "size": "sm"
+          }
+        ],
+        "flex": 0
+      }
+    }
+  ]
+}
