@@ -1,0 +1,149 @@
+{
+  "type": "carousel",
+  "contents": [
+    {
+      "type": "bubble",
+      "hero": {
+        "type": "image",
+        "url": "https://d1f5hsy4d47upe.cloudfront.net/42/429f2db18bb3253447526aee13cb2137_w.jpg",
+        "size": "full",
+        "aspectRatio": "20:13",
+        "aspectMode": "cover",
+        "action": {
+          "type": "uri",
+          "uri": "https://linecorp.com"
+        }
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "md",
+        "action": {
+          "type": "uri",
+          "uri": "https://linecorp.com"
+        },
+        "contents": [
+          {
+            "type": "text",
+            "text": "Brown's Burger1",
+            "size": "xl",
+            "weight": "bold"
+          },
+          {
+            "type": "box",
+            "layout": "vertical",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "￥500（税抜）",
+                "weight": "bold",
+                "margin": "sm"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "商品の説明",
+            "wrap": true,
+            "color": "#aaaaaa",
+            "size": "xxs"
+          }
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "spacer",
+            "size": "xxl"
+          },
+          {
+            "type": "button",
+            "style": "primary",
+            "color": "#905c44",
+            "action": {
+              "type": "postback",
+              "label": "注文する",
+              "data": "type=select&item=001",
+              "displayText": "Brown's Burger1"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "bubble",
+      "hero": {
+        "type": "image",
+        "url": "https://d1f5hsy4d47upe.cloudfront.net/3c/3cf2b60478ebad1ceb6aa1dcc950bc27_w.jpg",
+        "size": "full",
+        "aspectRatio": "20:13",
+        "aspectMode": "cover",
+        "action": {
+          "type": "uri",
+          "uri": "https://linecorp.com"
+        }
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "md",
+        "action": {
+          "type": "uri",
+          "uri": "https://linecorp.com"
+        },
+        "contents": [
+          {
+            "type": "text",
+            "text": "Brown's Burger2",
+            "size": "xl",
+            "weight": "bold"
+          },
+          {
+            "type": "box",
+            "layout": "vertical",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "￥600（税抜）",
+                "weight": "bold",
+                "margin": "sm"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "商品の説明",
+            "wrap": true,
+            "color": "#aaaaaa",
+            "size": "xxs"
+          }
+        ]
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "spacer",
+            "size": "xxl"
+          },
+          {
+            "type": "button",
+            "style": "primary",
+            "color": "#905c44",
+            "action": {
+              "type": "postback",
+              "label": "注文する",
+              "data": "type=select&item=002",
+              "displayText": "Brown's Burger2"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

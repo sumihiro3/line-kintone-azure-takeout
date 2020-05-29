@@ -3,6 +3,7 @@ const fs = require('fs')
 const consola = require('consola')
 const Router = require('express-promise-router')
 const line = require('@line/bot-sdk')
+const queryString = require('query-string')
 
 // Express router
 const router = new Router()
@@ -41,16 +42,23 @@ function handleEvent(event) {
       switch (message.type) {
         case 'text':
           return handleText(message, event.replyToken, event.source)
-        case 'postback':
-          let data = event.postback.data
-          if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
-            data += `(${JSON.stringify(event.postback.params)})`
-          }
-          const msg = { type: 'text', text: `Got postback: ${data}` }
-          return lineApiClient.replyMessage(event.replyToken, msg)
         default:
           throw Promise.resolve(null)
       }
+    case 'postback':
+      let data = event.postback.data
+      if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
+        data += `(${JSON.stringify(event.postback.params)})`
+      }
+      let replyMessage = { type: 'text', text: `Got postback: ${data}` }
+      const parsedData = queryString.parse(data)
+      if (parsedData.type === 'select') {
+        const itemId = parsedData.item
+        replyMessage = generateQuantityMessage(itemId)
+      } else if (parsedData.type === 'order') {
+        // 注文
+      }
+      return lineApiClient.replyMessage(event.replyToken, replyMessage)
     case 'follow':
       const msg = generateFollowMessage('Thank you for your following')
       return lineApiClient.replyMessage(event.replyToken, msg)
@@ -60,8 +68,11 @@ function handleEvent(event) {
 }
 
 function handleText(message, replyToken) {
-  const echo = { type: 'text', text: message.text }
-  return lineApiClient.replyMessage(replyToken, echo)
+  let replyMessage = { type: 'text', text: message.text }
+  if (message.text === 'メニュー') {
+    replyMessage = generateItemsMessage()
+  }
+  return lineApiClient.replyMessage(replyToken, replyMessage)
 }
 
 function generateFollowMessage(text) {
@@ -74,6 +85,38 @@ function generateFollowMessage(text) {
     type: 'flex',
     altText: text,
     contents: msg
+  }
+}
+
+function generateItemsMessage(text) {
+  const msg = JSON.parse(fs.readFileSync('./server/itemsMessage.json', 'utf8'))
+  return {
+    type: 'flex',
+    altText: 'メニュー',
+    contents: msg
+  }
+}
+
+function generateQuantityMessage(itemId) {
+  const items = []
+  for (let i = 1; i < 6; i++) {
+    const button = {
+      type: 'action',
+      action: {
+        type: 'postback',
+        label: `${i}個`,
+        data: `type=order&item=${itemId}&quantity=${i}`,
+        displayText: `${i}個`
+      }
+    }
+    items.push(button)
+  }
+  return {
+    type: 'text',
+    text: 'いくつ注文する？',
+    quickReply: {
+      items
+    }
   }
 }
 
