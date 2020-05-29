@@ -1,4 +1,4 @@
-# liff-kintone-questionary
+# line-kintone-azure-takeout
 
 > My brilliant Nuxt.js project
 
