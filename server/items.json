@@ -1,16 +1,16 @@
 [
   {
     "id": "001",
-    "name": "Brown's Burger1",
-    "description": "XXXXXXXXX",
-    "image": "https://d1f5hsy4d47upe.cloudfront.net/42/429f2db18bb3253447526aee13cb2137_w.jpg",
+    "name": "チーズバーガー",
+    "description": "大きなトマトとレタスの入ったチーズバーガー",
+    "image": "https://2.bp.blogspot.com/-V6VfiVDMitg/WC5efOCqmFI/AAAAAAAA_5A/P97lsAxzB5kUDdJYLIz_DvdferdNRl6aACLcB/s400/food_hamburger_cheese.png",
     "unitPrice": 500
   },
   {
     "id": "002",
-    "name": "Brown's Burger2",
-    "description": "XXXXXXXXX",
-    "image": "https://d1f5hsy4d47upe.cloudfront.net/3c/3cf2b60478ebad1ceb6aa1dcc950bc27_w.jpg",
+    "name": "テリヤキバーガー",
+    "description": "照り焼きハンバーグとレタスとマヨネーズが魅力のテリヤキバーガー",
+    "image": "https://1.bp.blogspot.com/-ccmRa-W5FdQ/WGnPWhQSnzI/AAAAAAABA4w/krKcel6z1hobC87K1Vj9bG_Me_AfBo15QCLcB/s400/hamburger_teriyaki_burger.png",
     "unitPrice": 600
   }
 ]

@@ -12,8 +12,8 @@ const PAY_STATE_PAYING = 'PAYING'
 const PAY_STATE_PAID = 'PAID'
 
 const DELIVERY_STATE_PREPARING = 'PREPARING'
-// const DELIVERY_STATE_DELIVERING = 'DELIVERING'
-// const DELIVERY_STATE_DELIVERED = 'DELIVERED'
+const DELIVERY_STATE_DELIVERING = 'DELIVERING'
+const DELIVERY_STATE_DELIVERED = 'DELIVERED'
 
 const CURRENCY_JPY = 'JPY'
 
@@ -190,21 +190,34 @@ module.exports = class PayTransaction {
     consola.log(`updateShippingInfo called! shippingMethod: ${shippingMethod}`)
     const app = APP_ID
     const updateKey = {
-      field: 'order_id',
-      value: this.orderId
+      field: 'transaction_id',
+      value: this.transactionId
     }
+    const orderId = this.orderId
     return new Promise(function(resolve, reject) {
       const record = {
-        shipping_method: {
-          value: shippingMethod
-        },
-        shipping_fee_amount: {
-          value: shippingFeeAmount
-        },
+        // shipping_method: {
+        //   value: shippingMethod
+        // },
+        // shipping_fee_amount: {
+        //   value: shippingFeeAmount
+        // },
         pay_state: {
           value: PAY_STATE_PAYING
         }
       }
+      if (shippingMethod && shippingFeeAmount) {
+        // 配送方法の指定がある場合のみ更新する
+        record.shipping_method = {
+          value: shippingMethod
+        }
+        record.shipping_fee_amount = {
+          value: shippingFeeAmount
+        }
+      }
+      consola.log('Transaction', record)
+      consola.log('updateKey', updateKey)
+      consola.log('app', app)
       // update
       let result = null
       const kintoneRecord = PayTransaction.auth()
@@ -212,7 +225,7 @@ module.exports = class PayTransaction {
         .updateRecordByUpdateKey({ app, updateKey, record })
         .then(async (rsp) => {
           consola.log(rsp)
-          const tran = await PayTransaction.getTransaction(this.orderId)
+          const tran = await PayTransaction.getTransaction(orderId)
           result = tran
           resolve(result)
         })
@@ -230,14 +243,16 @@ module.exports = class PayTransaction {
     */
   setPaid(paidDate) {
     consola.log(`setPaid called! paidDate: ${paidDate}`)
+    const orderId = this.orderId
+    const transactionId = this.transactionId
     return new Promise(function(resolve, reject) {
       const app = APP_ID
       if (!paidDate) {
         paidDate = moment()
       }
       const updateKey = {
-        field: 'order_id',
-        value: this.orderId
+        field: 'transaction_id',
+        value: transactionId
       }
       const record = {
         paid_at: {
@@ -250,6 +265,9 @@ module.exports = class PayTransaction {
           value: DELIVERY_STATE_PREPARING
         }
       }
+      consola.log('Transaction', record)
+      consola.log('updateKey', updateKey)
+      consola.log('app', app)
       // update
       let result = null
       const kintoneRecord = PayTransaction.auth()
@@ -257,7 +275,7 @@ module.exports = class PayTransaction {
         .updateRecordByUpdateKey({ app, updateKey, record })
         .then(async (rsp) => {
           consola.log(rsp)
-          const tran = await PayTransaction.getTransaction(this.orderId)
+          const tran = await PayTransaction.getTransaction(orderId)
           result = tran
           resolve(result)
         })

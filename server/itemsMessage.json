@@ -5,9 +5,9 @@
       "type": "bubble",
       "hero": {
         "type": "image",
-        "url": "https://d1f5hsy4d47upe.cloudfront.net/42/429f2db18bb3253447526aee13cb2137_w.jpg",
+        "url": "https://2.bp.blogspot.com/-V6VfiVDMitg/WC5efOCqmFI/AAAAAAAA_5A/P97lsAxzB5kUDdJYLIz_DvdferdNRl6aACLcB/s400/food_hamburger_cheese.png",
         "size": "full",
-        "aspectRatio": "20:13",
+        "aspectRatio": "1:1",
         "aspectMode": "cover",
         "action": {
           "type": "uri",
@@ -25,7 +25,7 @@
         "contents": [
           {
             "type": "text",
-            "text": "Brown's Burger1",
+            "text": "チーズバーガー",
             "size": "xl",
             "weight": "bold"
           },
@@ -36,7 +36,7 @@
             "contents": [
               {
                 "type": "text",
-                "text": "￥500（税抜）",
+                "text": "￥500",
                 "weight": "bold",
                 "margin": "sm"
               }
@@ -67,7 +67,7 @@
               "type": "postback",
               "label": "注文する",
               "data": "type=select&item=001",
-              "displayText": "Brown's Burger1"
+              "displayText": "チーズバーガー"
             }
           }
         ]
@@ -77,9 +77,9 @@
       "type": "bubble",
       "hero": {
         "type": "image",
-        "url": "https://d1f5hsy4d47upe.cloudfront.net/3c/3cf2b60478ebad1ceb6aa1dcc950bc27_w.jpg",
+        "url": "https://1.bp.blogspot.com/-ccmRa-W5FdQ/WGnPWhQSnzI/AAAAAAABA4w/krKcel6z1hobC87K1Vj9bG_Me_AfBo15QCLcB/s400/hamburger_teriyaki_burger.png",
         "size": "full",
-        "aspectRatio": "20:13",
+        "aspectRatio": "1:1",
         "aspectMode": "cover",
         "action": {
           "type": "uri",
@@ -97,7 +97,7 @@
         "contents": [
           {
             "type": "text",
-            "text": "Brown's Burger2",
+            "text": "テリヤキバーガー",
             "size": "xl",
             "weight": "bold"
           },
@@ -108,7 +108,7 @@
             "contents": [
               {
                 "type": "text",
-                "text": "￥600（税抜）",
+                "text": "￥600",
                 "weight": "bold",
                 "margin": "sm"
               }
@@ -139,7 +139,7 @@
               "type": "postback",
               "label": "注文する",
               "data": "type=select&item=002",
-              "displayText": "Brown's Burger2"
+              "displayText": "テリヤキバーガー"
             }
           }
         ]

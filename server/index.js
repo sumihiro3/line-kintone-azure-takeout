@@ -5,6 +5,7 @@ const line = require('@line/bot-sdk')
 const config = require('../nuxt.config.js')
 const apiRouter = require('./api')
 const botRouter = require('./bot')
+const payRouter = require('./pay')
 const app = express()
 
 // Import and Set Nuxt.js options
@@ -66,6 +67,7 @@ async function start() {
   }
   app.use('/api', apiRouter)
   app.use('/bot', botRouter)
+  app.use('/pay', payRouter)
 
   // Give nuxt middleware to express
   app.use(nuxt.render)
