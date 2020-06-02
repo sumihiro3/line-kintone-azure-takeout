@@ -1,0 +1,116 @@
+// Channel access token
+@token = Bearer 
+@userId = 
+
+###
+# @name createRichMenu
+// リッチメニュー新規作成
+POST https://api.line.me/v2/bot/richmenu HTTP/1.1
+content-type: application/json
+Authorization: {{token}}
+
+{
+    "size": {
+      "width": 2500,
+      "height": 843
+    },
+    "selected": true,
+    "name": "richmenu-default-v-0-1",
+    "chatBarText": "メニュー",
+    "areas": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1250,
+            "height": 843
+          },
+          "action": {
+            "type": "postback",
+            "data": "type=menu",
+            "displayText": "注文する"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1250,
+            "y": 0,
+            "width": 625,
+            "height": 422
+          },
+          "action": {
+            "type": "postback",
+            "data": "type=business-hour",
+            "displayText": "営業時間"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1875,
+            "y": 0,
+            "width": 625,
+            "height": 422
+          },
+          "action": {
+            "type": "postback",
+            "data": "type=access",
+            "displayText": "アクセス"
+          }
+        },
+        {
+          "bounds": {
+            "x": 1250,
+            "y": 422,
+            "width": 1250,
+            "height": 421
+          },
+          "action": {
+            "type": "postback",
+            "data": "type=customer-support",
+            "displayText": "問い合わせ"
+          }
+        }
+    ]
+}
+
+###
+@richMenuId = {{createRichMenu.response.body.richMenuId}}
+
+###
+// リッチメニューに画像を紐付け
+POST https://api.line.me/v2/bot/richmenu/{{richMenuId}}/content HTTP/1.1
+content-type: image/jpeg
+Authorization: {{token}}
+
+< ./richmenu_default.png
+
+
+###
+// 全ユーザーにリッチメニュー割り当て
+POST https://api.line.me/v2/bot/user/all/richmenu/{{richMenuId}} HTTP/1.1
+Authorization: {{token}}
+
+###
+// 全ユーザーのリッチメニュー解除
+DELETE https://api.line.me/v2/bot/user/all/richmenu HTTP/1.1
+Authorization: {{token}}
+
+###
+// 特定のユーザーにリッチメニュー割り当て
+POST https://api.line.me/v2/bot/user/{{userId}}/richmenu/{{richMenuId}} HTTP/1.1
+Authorization: {{token}}
+
+###
+// リッチメニューリスト取得
+GET https://api.line.me/v2/bot/richmenu/list HTTP/1.1
+Authorization: {{token}}
+
+###
+// デフォルトのリッチメニュー取得
+GET https://api.line.me/v2/bot/user/all/richmenu HTTP/1.1
+Authorization: {{token}}
+
+###
+// リッチメニュー解除
+DELETE https://api.line.me/v2/bot/user/{{userId}}/richmenu HTTP/1.1
+Authorization: {{token}}

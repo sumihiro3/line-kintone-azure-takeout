@@ -32,7 +32,7 @@ router.post('/webhook', line.middleware(lineConfig), (req, res) => {
     })
 })
 
-function handleEvent(event) {
+async function handleEvent(event) {
   if (event.replyToken && event.replyToken.match(/^(.)\1*$/)) {
     return consola.log('Test hook received: ' + JSON.stringify(event.message))
   }
@@ -46,26 +46,24 @@ function handleEvent(event) {
           throw Promise.resolve(null)
       }
     case 'postback':
-      let data = event.postback.data
-      if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
-        data += `(${JSON.stringify(event.postback.params)})`
-      }
-      let replyMessage = { type: 'text', text: `Got postback: ${data}` }
-      const parsedData = queryString.parse(data)
-      if (parsedData.type === 'select') {
-        const itemId = parsedData.item
-        replyMessage = generateQuantityMessage(itemId)
-      } else if (parsedData.type === 'order') {
-        // 注文
-      }
-      return lineApiClient.replyMessage(event.replyToken, replyMessage)
+      const data = event.postback.data
+      return handlePostback(data, event.replyToken)
     case 'follow':
-      // 言語取得
-      // kintoneにユーザ登録
-      // リッチメニュー表示
-      // メッセージ表示
-      const msg = generateFollowMessage('Thank you for your following')
-      return lineApiClient.replyMessage(event.replyToken, msg)
+      const msg = await lineApiClient
+        .getProfile(event.source.userId)
+        .then((profile) => {
+          const lang = profile.language
+          // TODO: kintoneにuuidとlanguageを登録
+          if (lang === 'ja') {
+            return '友達登録ありがとうございます'
+          } else {
+            return 'Thank you for your following'
+          }
+        })
+      return lineApiClient.replyMessage(event.replyToken, {
+        type: 'text',
+        text: msg
+      })
     default:
       throw Promise.resolve(null)
   }
@@ -73,7 +71,21 @@ function handleEvent(event) {
 
 function handleText(message, replyToken) {
   let replyMessage = { type: 'text', text: message.text }
-  if (message.text === 'アクセス') {
+  const msg = {
+    type: 'text',
+    text: '以下のお問合せ内容で送信してもよろしいですか？ ' + message.text
+  }
+  replyMessage = msg
+  return lineApiClient.replyMessage(replyToken, replyMessage)
+}
+
+function handlePostback(data, replyToken) {
+  if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
+    data += `(${JSON.stringify(event.postback.params)})`
+  }
+  let replyMessage = { type: 'text', text: `Got postback: ${data}` }
+  const parsedData = queryString.parse(data)
+  if (parsedData.type === 'access') {
     replyMessage = {
       type: 'location',
       title: 'my location',
@@ -81,26 +93,23 @@ function handleText(message, replyToken) {
       latitude: 35.65910807942215,
       longitude: 139.70372892916203
     }
-  } else if (message.text === '営業時間') {
+  } else if (parsedData.type === 'business-hour') {
     replyMessage = generateBusinessHourMessage()
-  } else if (message.text === 'メニュー') {
-    // categoryを表示
+  } else if (parsedData.type === 'customer-support') {
+    // TODO: リッチメニュー解除
+    replyMessage = generateCustomerSupportMessage()
+  } else if (parsedData.type === 'menu') {
+    // 商品選択用のcarouselを表示
+    // TODO: categoryを表示
     replyMessage = generateItemsMessage()
+  } else if (parsedData.type === 'select') {
+    // 個数選択用のquickreplyを表示
+    const itemId = parsedData.item
+    replyMessage = generateQuantityMessage(itemId)
+  } else if (parsedData.type === 'order') {
+    // 注文
   }
   return lineApiClient.replyMessage(replyToken, replyMessage)
-}
-
-function generateFollowMessage(text) {
-  const msg = JSON.parse(JSON.stringify(followMessage))
-  // Overwrite LIFF URL
-  const liffUrl = `https://liff.line.me/${process.env.LIFF_ID}`
-  consola.info('LIFF URL', liffUrl)
-  msg.footer.contents[0].action.uri = liffUrl
-  return {
-    type: 'flex',
-    altText: text,
-    contents: msg
-  }
 }
 
 function generateBusinessHourMessage() {
@@ -111,6 +120,13 @@ function generateBusinessHourMessage() {
     type: 'flex',
     altText: '営業時間',
     contents: msg
+  }
+}
+
+function generateCustomerSupportMessage() {
+  return {
+    type: 'text',
+    text: 'お問合せ内容をご入力ください。'
   }
 }
 
