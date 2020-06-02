@@ -127,6 +127,12 @@ function generateReceiptMessage(transaction) {
           margin: 'md'
         },
         {
+          type: 'text',
+          text: 'お買い上げありがとうございました！',
+          size: 'sm',
+          margin: 'sm'
+        },
+        {
           type: 'separator',
           margin: 'xxl'
         },
