@@ -1,0 +1,119 @@
+{
+  "type": "bubble",
+  "header": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "レジ",
+        "weight": "bold",
+        "color": "#1DB446",
+        "size": "lg"
+      }
+    ]
+  },
+  "hero": {
+    "type": "image",
+    "url": "https://illustimage.com/photo/dl/6604.png?20180801",
+    "size": "4xl",
+    "aspectRatio": "1:1",
+    "aspectMode": "cover"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "xxl",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "text",
+                "text": "itemLabel",
+                "size": "sm",
+                "color": "#555555",
+                "flex": 0
+              },
+              {
+                "type": "text",
+                "text": "price",
+                "size": "sm",
+                "color": "#111111",
+                "align": "end"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "xxl",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "separator",
+            "margin": "xxl"
+          },
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "text",
+                "text": "合計",
+                "size": "md",
+                "color": "#555555"
+              },
+              {
+                "type": "text",
+                "text": "totalPrice",
+                "size": "lg",
+                "weight": "bold",
+                "color": "#111111",
+                "align": "end"
+              }
+            ],
+            "margin": "md"
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "messageText",
+        "wrap": true,
+        "size": "sm",
+        "color": "#666666"
+      },
+      {
+        "type": "button",
+        "style": "primary",
+        "height": "sm",
+        "margin": "xl",
+        "action": {
+          "type": "uri",
+          "label": "LINE Payで決済",
+          "uri": "paymentUrl"
+        }
+      }
+    ]
+  },
+  "styles": {
+    "footer": {
+      "separator": true
+    }
+  }
+}

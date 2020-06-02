@@ -11,17 +11,22 @@ router.use(bodyParser.urlencoded({ extended: true }))
 router.use(bodyParser.json())
 
 // Kintone Settings
-const KINTONE_APP_API_TOKEN = process.env.KINTONE_APP_API_TOKEN
-const KINTONE_APP_DOMAIN = process.env.KINTONE_APP_DOMAIN
+const KINTONE_DOMAIN_NAME = process.env.KINTONE_DOMAIN_NAME
+const KINTONE_USER_ID = process.env.KINTONE_USER_ID
+const KINTONE_USER_PASSWORD = process.env.KINTONE_USER_PASSWORD
 const KINTONE_APP_ID = process.env.KINTONE_APP_ID
 // kintone connection
 const kintoneAuth = new kintone.Auth()
-const authParams = {
-  apiToken: KINTONE_APP_API_TOKEN
-}
-kintoneAuth.setApiToken(authParams)
+kintoneAuth.setPasswordAuth({
+  username: KINTONE_USER_ID,
+  password: KINTONE_USER_PASSWORD
+})
+// const authParams = {
+//   apiToken: KINTONE_APP_API_TOKEN
+// }
+// kintoneAuth.setApiToken(authParams)
 const connectionParams = {
-  domain: KINTONE_APP_DOMAIN,
+  domain: KINTONE_DOMAIN_NAME,
   auth: kintoneAuth
 }
 const kintoneConnection = new kintone.Connection(connectionParams)

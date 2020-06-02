@@ -22,9 +22,14 @@ consola.log(
   process.env.LINE_BOT_CHANNEL_ACCESS_TOKEN
 )
 consola.log('LINE_BOT_CHANNEL_SECRET', process.env.LINE_BOT_CHANNEL_SECRET)
-consola.log('KINTONE_APP_API_TOKEN', process.env.KINTONE_APP_API_TOKEN)
-consola.log('KINTONE_APP_DOMAIN', process.env.KINTONE_APP_DOMAIN)
-consola.log('KINTONE_APP_ID', process.env.KINTONE_APP_ID)
+consola.log('KINTONE_DOMAIN_NAME', process.env.KINTONE_DOMAIN_NAME)
+consola.log('KINTONE_USER_ID', process.env.KINTONE_USER_ID)
+consola.log('KINTONE_USER_PASSWORD', process.env.KINTONE_USER_PASSWORD)
+consola.log(
+  'KINTONE_TRANSACTION_APP_ID',
+  process.env.KINTONE_TRANSACTION_APP_ID
+)
+consola.log('KINTONE_ORDER_ITEM_APP_ID', process.env.KINTONE_ORDER_ITEM_APP_ID)
 
 // LINE Bot
 const lineConfig = {
@@ -33,6 +38,19 @@ const lineConfig = {
 }
 const lineApiClient = new line.Client(lineConfig)
 app.locals.lineApiClient = lineApiClient
+
+// Use LINE Pay Checkout API or not
+consola.log(`useCheckout: ${process.env.LINE_PAY_USE_CHECKOUT}`)
+const useCheckout = process.env.LINE_PAY_USE_CHECKOUT === 'true'
+app.locals.useCheckout = useCheckout
+// LINE Pay API SDK の初期化
+const LinePay = require('./line-pay/line-pay')
+const pay = new LinePay({
+  channelId: process.env.LINE_PAY_CHANNEL_ID,
+  channelSecret: process.env.LINE_PAY_CHANNEL_SECRET,
+  isSandbox: !useCheckout
+})
+app.locals.pay = pay
 
 async function start() {
   // Init Nuxt.js

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "001",
+    "name": "Brown's Burger1",
+    "description": "XXXXXXXXX",
+    "image": "https://d1f5hsy4d47upe.cloudfront.net/42/429f2db18bb3253447526aee13cb2137_w.jpg",
+    "unitPrice": 500
+  },
+  {
+    "id": "002",
+    "name": "Brown's Burger2",
+    "description": "XXXXXXXXX",
+    "image": "https://d1f5hsy4d47upe.cloudfront.net/3c/3cf2b60478ebad1ceb6aa1dcc950bc27_w.jpg",
+    "unitPrice": 600
+  }
+]
