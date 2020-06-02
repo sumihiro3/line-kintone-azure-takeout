@@ -115,9 +115,14 @@ module.exports = {
     LINE_BOT_CHANNEL_ACCESS_TOKEN:
       process.env.LINE_BOT_CHANNEL_ACCESS_TOKEN || '',
     LINE_BOT_CHANNEL_SECRET: process.env.LINE_BOT_CHANNEL_SECRET || '',
-    KINTONE_APP_API_TOKEN: process.env.KINTONE_APP_API_TOKEN || '',
-    KINTONE_APP_DOMAIN: process.env.KINTONE_APP_DOMAIN || '',
-    KINTONE_APP_ID: process.env.KINTONE_APP_ID || ''
+    KINTONE_DOMAIN_NAME: process.env.KINTONE_DOMAIN_NAME || '',
+    KINTONE_USER_ID: process.env.KINTONE_USER_ID || '',
+    KINTONE_USER_PASSWORD: process.env.KINTONE_USER_PASSWORD || '',
+    KINTONE_FOLLOWED_USER_APP_ID:
+      process.env.KINTONE_FOLLOWED_USER_APP_ID || '',
+    KINTONE_ORDER_ITEM_APP_ID: process.env.KINTONE_ORDER_ITEM_APP_ID || '',
+    KINTONE_TRANSACTION_APP_ID: process.env.KINTONE_TRANSACTION_APP_ID || '',
+    KINTONE_INQUIRY_APP_ID: process.env.KINTONE_INQUIRY_APP_ID || ''
   },
   /*
    ** Build configuration

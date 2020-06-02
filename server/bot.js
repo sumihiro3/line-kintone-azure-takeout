@@ -7,6 +7,7 @@ const queryString = require('query-string')
 const { v4: uuidv4 } = require('uuid')
 const PayTransaction = require('./pay_transaction')
 const OrderedItem = require('./ordered_item')
+const FollowedUser = require('./followed_user')
 
 const API_URL = process.env.API_URL
 
@@ -65,15 +66,18 @@ async function handleEvent(event) {
           throw Promise.resolve(null)
       }
     case 'follow':
-      const msg = await lineApiClient.getProfile(userId).then((profile) => {
-        const lang = profile.language
-        // TODO: kintoneにuuidとlanguageを登録
-        if (lang === 'ja') {
-          return '友達登録ありがとうございます'
-        } else {
-          return 'Thank you for your following'
-        }
-      })
+      const msg = await lineApiClient
+        .getProfile(userId)
+        .then(async (profile) => {
+          const lang = profile.language
+          // kintone にuserId とlanguage を登録
+          await FollowedUser.registUserInfo(userId, profile.displayName, lang)
+          if (lang === 'ja') {
+            return '友達登録ありがとうございます'
+          } else {
+            return 'Thank you for your following'
+          }
+        })
       return lineApiClient.replyMessage(replyToken, {
         type: 'text',
         text: msg
