@@ -122,7 +122,8 @@ module.exports = {
       process.env.KINTONE_FOLLOWED_USER_APP_ID || '',
     KINTONE_ORDER_ITEM_APP_ID: process.env.KINTONE_ORDER_ITEM_APP_ID || '',
     KINTONE_TRANSACTION_APP_ID: process.env.KINTONE_TRANSACTION_APP_ID || '',
-    KINTONE_INQUIRY_APP_ID: process.env.KINTONE_INQUIRY_APP_ID || ''
+    KINTONE_INQUIRY_APP_ID: process.env.KINTONE_INQUIRY_APP_ID || '',
+    LINE_RICH_MENU_DEFAULT_ID: process.env.LINE_RICH_MENU_DEFAULT_ID || ''
   },
   /*
    ** Build configuration
