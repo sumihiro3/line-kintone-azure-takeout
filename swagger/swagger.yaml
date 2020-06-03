@@ -1,17 +1,19 @@
 swagger: "2.0"
 info:
-  description: "LINE × kintoneでアンケートシステムを作ってみよう！"
+  description: "LINE×kintone×Azureでテイクアウトアプリを作ってみよう！"
   version: "1.0.0"
-  title: "LINE - Kintone Questionary Hands-on (2020.05.11)"
+  title: "LINE - Kintone Azure Takeout Bot Hands-on (2020.06.09)"
 externalDocs:
   description: "Event page"
-  url: "https://linedevelopercommunity.connpass.com/event/173295/"
+  url: "https://linedevelopercommunity.connpass.com/event/176924/"
 host: "liff-kintone-questionary.herokuapp.com"
 basePath: "/api"
 
 tags:
 - name: "message"
   description: "Send a multicast message"
+- name: "deliveryState"
+  description: "Notify the order delivery state updated"
 schemes:
 - "https"
 paths:
@@ -25,23 +27,57 @@ paths:
       description: ""
       operationId: "sendMulticastMessage"
       consumes:
-      - "application/json"
+        - "application/json"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            userIds:
-              type: "array"
-              items:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              userIds:
+                type: "array"
+                items:
+                  type: "string"
+                example: ['userId001', 'userId002', 'userId003']
+              message:
+                $ref: "#/definitions/Message"
+      responses:
+        '200':
+          description: "Success"
+        '400':
+          description: "NG"
+  /updateDeliveryState:
+    post:
+      tags:
+        - "deliveryState"
+      security:
+        - api_key: []
+      summary: "Notify the order delivery state updated"
+      description: ""
+      operationId: "notifyOrderDeliveryState"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              orderId:
                 type: "string"
-              example: ['userId001', 'userId002', 'userId003']
-            message:
-              $ref: "#/definitions/Message"
+                example: "order-1234"
+              deliveryState:
+                type: "string"
+                enum:
+                  - PREPARING
+                  - DELIVERING
+                  - DELIVERED
       responses:
         '200':
           description: "Success"
