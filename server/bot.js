@@ -5,6 +5,10 @@ const Router = require('express-promise-router')
 const line = require('@line/bot-sdk')
 const queryString = require('query-string')
 const { v4: uuidv4 } = require('uuid')
+const {
+  TextAnalyticsClient,
+  AzureKeyCredential
+} = require('@azure/ai-text-analytics')
 const PayTransaction = require('./pay_transaction')
 const OrderedItem = require('./ordered_item')
 const FollowedUser = require('./followed_user')
@@ -32,6 +36,14 @@ consola.info('follow Flex Message', followMessage)
 // LINE Pay client
 let payClient
 let useLinePayCheckout = false
+
+// Azure AI
+const endpoint = process.env.AZURE_API_URL
+const key = process.env.AZURE_ACCESS_KEY
+const textAnalyticsClient = new TextAnalyticsClient(
+  endpoint,
+  new AzureKeyCredential(key)
+)
 
 router.post('/webhook', line.middleware(lineConfig), (req, res) => {
   consola.log('Bot webhook called!')
@@ -116,12 +128,16 @@ async function handlePostback(data, replyToken, userId) {
     replyMessage = generateCustomerSupportMessage()
   } else if (parsedData.type === 'send') {
     const message = parsedData.data
-    consola.log(message)
-    // TODO: Azureから問い合わせ内容のポジネガ分析結果取得
-    const category = '0.8'
+    // 問い合わせ内容のポジネガ分析
+    const sentimentInput = [{ id: '1', language: 'ja', text: message }]
+    const sentimentResult = await textAnalyticsClient.analyzeSentiment(
+      sentimentInput
+    )
+    consola.log(sentimentResult)
+    const sentiment = sentimentResult[0].sentiment
     // TODO: Azureから問い合わせ内容の翻訳結果取得
     // kintoneに問い合わせ内容と翻訳結果とポジネガ分析結果を登録
-    await ContactMessage.registContactInfo(userId, message, category)
+    await ContactMessage.registContactInfo(userId, message, sentiment)
     // リッチメニューを設定
     const richmenuId = process.env.LINE_RICH_MENU_DEFAULT_ID
     lineApiClient.linkRichMenuToUser(userId, richmenuId)
@@ -204,7 +220,7 @@ function generateQuantityMessage(itemId) {
       type: 'action',
       action: {
         type: 'postback',
-        label: `${i}個`,
+        label: `${i} 個`,
         data: `type=order&item=${itemId}&quantity=${i}`,
         displayText: `${i}個`
       }
