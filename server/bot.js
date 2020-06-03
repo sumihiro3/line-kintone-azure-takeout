@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require('uuid')
 const PayTransaction = require('./pay_transaction')
 const OrderedItem = require('./ordered_item')
 const FollowedUser = require('./followed_user')
+const ContactMessage = require('./contact_message')
 
 const API_URL = process.env.API_URL
 
@@ -72,11 +73,10 @@ async function handleEvent(event) {
           const lang = profile.language
           // kintone にuserId とlanguage を登録
           await FollowedUser.registUserInfo(userId, profile.displayName, lang)
-          if (lang === 'ja') {
-            return '友達登録ありがとうございます'
-          } else {
-            return 'Thank you for your following'
-          }
+          // リッチメニューを設定
+          const richmenuId = process.env.LINE_RICH_MENU_DEFAULT_ID
+          await lineApiClient.linkRichMenuToUser(userId, richmenuId)
+          return '友達登録ありがとうございます'
         })
       return lineApiClient.replyMessage(replyToken, {
         type: 'text',
@@ -91,16 +91,11 @@ async function handleEvent(event) {
 }
 
 function handleText(message, replyToken) {
-  let replyMessage = { type: 'text', text: message.text }
-  const msg = {
-    type: 'text',
-    text: '以下のお問合せ内容で送信してもよろしいですか？ ' + message.text
-  }
-  replyMessage = msg
+  const replyMessage = generateContactMessage(message.text)
   return lineApiClient.replyMessage(replyToken, replyMessage)
 }
 
-function handlePostback(data, replyToken, userId) {
+async function handlePostback(data, replyToken, userId) {
   if (data === 'DATE' || data === 'TIME' || data === 'DATETIME') {
     data += `(${JSON.stringify(event.postback.params)})`
   }
@@ -109,7 +104,7 @@ function handlePostback(data, replyToken, userId) {
   if (parsedData.type === 'access') {
     replyMessage = {
       type: 'location',
-      title: 'my location',
+      title: `Brown's Burger Shop`,
       address: '〒150-0002 東京都渋谷区渋谷２丁目２１−１',
       latitude: 35.65910807942215,
       longitude: 139.70372892916203
@@ -117,11 +112,33 @@ function handlePostback(data, replyToken, userId) {
   } else if (parsedData.type === 'business-hour') {
     replyMessage = generateBusinessHourMessage()
   } else if (parsedData.type === 'customer-support') {
-    // TODO: リッチメニュー解除
+    lineApiClient.unlinkRichMenuFromUser(userId)
     replyMessage = generateCustomerSupportMessage()
+  } else if (parsedData.type === 'send') {
+    const message = parsedData.data
+    consola.log(message)
+    // TODO: Azureから問い合わせ内容のポジネガ分析結果取得
+    const category = '0.8'
+    // TODO: Azureから問い合わせ内容の翻訳結果取得
+    // kintoneに問い合わせ内容と翻訳結果とポジネガ分析結果を登録
+    await ContactMessage.registContactInfo(userId, message, category)
+    // リッチメニューを設定
+    const richmenuId = process.env.LINE_RICH_MENU_DEFAULT_ID
+    lineApiClient.linkRichMenuToUser(userId, richmenuId)
+    replyMessage = {
+      type: 'text',
+      text: '送信が完了しました'
+    }
+  } else if (parsedData.type === 'cancel') {
+    // リッチメニューを設定
+    const richmenuId = process.env.LINE_RICH_MENU_DEFAULT_ID
+    lineApiClient.linkRichMenuToUser(userId, richmenuId)
+    replyMessage = {
+      type: 'text',
+      text: 'キャンセルしました'
+    }
   } else if (parsedData.type === 'menu') {
     // 商品選択用のcarouselを表示
-    // TODO: categoryを表示
     replyMessage = generateItemsMessage()
   } else if (parsedData.type === 'select') {
     // 個数選択用のquickreply を表示
@@ -154,7 +171,20 @@ function generateBusinessHourMessage() {
 function generateCustomerSupportMessage() {
   return {
     type: 'text',
-    text: 'お問合せ内容をご入力ください。'
+    text: 'お問合せ内容をご入力ください。',
+    quickReply: {
+      items: [
+        {
+          type: 'action',
+          action: {
+            type: 'postback',
+            label: 'メニューに戻る',
+            data: 'type=cancel',
+            displayText: 'メニューに戻る'
+          }
+        }
+      ]
+    }
   }
 }
 
@@ -187,6 +217,75 @@ function generateQuantityMessage(itemId) {
     quickReply: {
       items
     }
+  }
+}
+
+function generateContactMessage(data) {
+  const msg = {
+    type: 'bubble',
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'box',
+          layout: 'vertical',
+          margin: 'lg',
+          spacing: 'sm',
+          contents: [
+            {
+              type: 'text',
+              text: '問い合わせ内容確認',
+              size: 'sm',
+              color: '#aaaaaa'
+            },
+            {
+              type: 'text',
+              text: data,
+              size: 'sm',
+              wrap: true
+            }
+          ]
+        }
+      ]
+    },
+    footer: {
+      type: 'box',
+      layout: 'horizontal',
+      spacing: 'sm',
+      contents: [
+        {
+          type: 'button',
+          height: 'sm',
+          action: {
+            type: 'postback',
+            label: '送信',
+            data: 'type=send&data=' + data,
+            displayText: '送信'
+          }
+        },
+        {
+          type: 'button',
+          height: 'sm',
+          action: {
+            type: 'postback',
+            label: 'キャンセル',
+            data: 'type=cancel',
+            displayText: 'キャンセル'
+          }
+        },
+        {
+          type: 'spacer',
+          size: 'sm'
+        }
+      ],
+      flex: 0
+    }
+  }
+  return {
+    type: 'flex',
+    altText: '問い合わせ内容確認',
+    contents: msg
   }
 }
 
