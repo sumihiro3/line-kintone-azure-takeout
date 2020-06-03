@@ -76,7 +76,7 @@ paths:
                 type: "string"
                 enum:
                   - PREPARING
-                  - DELIVERING
+                  - READY
                   - DELIVERED
       responses:
         '200':
