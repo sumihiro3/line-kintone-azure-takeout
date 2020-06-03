@@ -3,40 +3,23 @@ const consola = require('consola')
 const Router = require('express-promise-router')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const kintone = require('@kintone/kintone-js-sdk')
+const PayTransaction = require('./pay_transaction')
 
 // Express router
 const router = new Router()
 router.use(bodyParser.urlencoded({ extended: true }))
 router.use(bodyParser.json())
 
-// Kintone Settings
-const KINTONE_DOMAIN_NAME = process.env.KINTONE_DOMAIN_NAME
-const KINTONE_USER_ID = process.env.KINTONE_USER_ID
-const KINTONE_USER_PASSWORD = process.env.KINTONE_USER_PASSWORD
-const KINTONE_APP_ID = process.env.KINTONE_APP_ID
-// kintone connection
-const kintoneAuth = new kintone.Auth()
-kintoneAuth.setPasswordAuth({
-  username: KINTONE_USER_ID,
-  password: KINTONE_USER_PASSWORD
-})
-// const authParams = {
-//   apiToken: KINTONE_APP_API_TOKEN
-// }
-// kintoneAuth.setApiToken(authParams)
-const connectionParams = {
-  domain: KINTONE_DOMAIN_NAME,
-  auth: kintoneAuth
-}
-const kintoneConnection = new kintone.Connection(connectionParams)
-const kintoneAppId = KINTONE_APP_ID
-
 // Message template
 const pushMessage = JSON.parse(
   fs.readFileSync('./server/pushMessage.json', 'utf8')
 )
-// consola.info('push Flex Message', pushMessage)
+const queueTicketMessage = JSON.parse(
+  fs.readFileSync('./server/queueTicketMessage.json', 'utf8')
+)
+const thankYouMessage = JSON.parse(
+  fs.readFileSync('./server/thankYouMessage.json', 'utf8')
+)
 
 /*
 -------------------------------
@@ -113,22 +96,49 @@ function generatePushMessage(title, body) {
   }
 }
 
-router.post('/questionaryAnswer', async (req, res) => {
-  consola.log('POST questionaryAnswer called!')
+const DELIVERY_STATE_PREPARING = 'PREPARING'
+const DELIVERY_STATE_READY = 'READY'
+const DELIVERY_STATE_DELIVERED = 'DELIVERED'
+const DELIVERY_STATES = [
+  DELIVERY_STATE_PREPARING,
+  DELIVERY_STATE_READY,
+  DELIVERY_STATE_DELIVERED
+]
+
+router.post('/notifyOrderDeliveryState', async (req, res) => {
+  consola.log('POST notifyOrderDeliveryState called!')
   const data = req.body
   consola.log('Received Data', data)
-  const userId = data.userId
-  const answer = data.answer
+  const orderId = data.orderId
+  const deliveryState = data.deliveryState
   let apiResult = {
     code: '0000',
     message: 'SUCCESS'
   }
   try {
-    const result = await addAnswerRecordToKintone(userId, answer)
-    consola.log('Kintone addRecord result', result)
+    if (!DELIVERY_STATES.includes(deliveryState)) {
+      throw new Error('Invalid State code')
+    }
+    const transaction = await PayTransaction.getTransaction(orderId)
+    const userId = transaction.userId
+    const lineApiClient = req.app.locals.lineApiClient
+    switch (deliveryState) {
+      case DELIVERY_STATE_READY:
+        // eslint-disable-next-line no-case-declarations
+        const readyMessage = generateTakeoutReadyMessage(transaction)
+        lineApiClient.pushMessage(userId, readyMessage)
+        break
+      case DELIVERY_STATE_DELIVERED:
+        // eslint-disable-next-line no-case-declarations
+        const thankYouMessage = generateThankYouMessage()
+        lineApiClient.pushMessage(userId, thankYouMessage)
+        break
+      default:
+        consola.console.warn('No suitable message')
+        break
+    }
   } catch (error) {
-    consola.error('addAnswerRecordToKintone Failed...', error)
-    consola.error('Error Object', JSON.stringify(error.error))
+    consola.error('notifyOrderDeliveryState Failed...', error)
     apiResult = {
       code: '9999',
       message: 'FAILED'
@@ -138,52 +148,25 @@ router.post('/questionaryAnswer', async (req, res) => {
   }
 })
 
-// for UI test
-router.post('/questionaryAnswerFailed', (req, res) => {
-  consola.log('POST questionaryAnswerFailed called!')
-  const apiResult = {
-    code: '9999',
-    message: 'FAILED'
+function generateTakeoutReadyMessage(transaction) {
+  consola.log('generateTakeoutReadyMessage called!')
+  const msg = JSON.parse(JSON.stringify(queueTicketMessage))
+  msg.body.contents[0].text = transaction.recordId
+  msg.body.contents[2].text = transaction.title
+  return {
+    type: 'flex',
+    altText: '商品の準備ができました',
+    contents: msg
   }
-  res.status(200).json(apiResult)
-})
-
-function addAnswerRecordToKintone(userId, answer) {
-  return new Promise((resolve) => {
-    // Create record to addRecord
-    const kintoneRecord = new kintone.Record({ connection: kintoneConnection })
-    const record = {
-      q1: {
-        value: answer.industry
-      },
-      q2: {
-        value: answer.employmentStatus
-      },
-      q3: {
-        value: answer.workSystem
-      },
-      q4: {
-        value: answer.troubles
-      },
-      q5: {
-        value: answer.memo
-      },
-      userId: {
-        value: userId
-      }
-    }
-    try {
-      // Add record
-      const result = kintoneRecord.addRecord({
-        app: kintoneAppId,
-        record
-      })
-      resolve(result)
-    } catch (error) {
-      consola.error('Error at kintone addRecord', error)
-      Promise.reject(error)
-    }
-  })
 }
 
+function generateThankYouMessage() {
+  consola.log('generateThankYouMessage called!')
+  const msg = JSON.parse(JSON.stringify(thankYouMessage))
+  return {
+    type: 'flex',
+    altText: 'ご利用ありがとうございました',
+    contents: msg
+  }
+}
 module.exports = router

@@ -1,0 +1,88 @@
+{
+  "type": "bubble",
+  "header": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "商品の準備ができました",
+        "weight": "bold",
+        "color": "#1DB446",
+        "size": "xl",
+        "align": "center"
+      },
+      {
+        "type": "text",
+        "text": "店舗窓口ですフタッフにこのメッセージをお見せください",
+        "weight": "regular",
+        "size": "md",
+        "wrap": true,
+        "offsetTop": "xl"
+      }
+    ]
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "RecordNo",
+        "size": "5xl",
+        "weight": "bold",
+        "decoration": "underline",
+        "align": "center",
+        "gravity": "center",
+        "offsetTop": "sm",
+        "offsetBottom": "sm"
+      },
+      {
+        "type": "text",
+        "text": "テイクアウト商品",
+        "size": "sm",
+        "color": "#555555",
+        "flex": 0,
+        "wrap": true,
+        "margin": "xl",
+        "offsetTop": "md"
+      },
+      {
+        "type": "text",
+        "text": "itemLabel",
+        "size": "md",
+        "color": "#555555",
+        "flex": 0,
+        "wrap": true,
+        "margin": "md",
+        "offsetTop": "md",
+        "offsetStart": "xl"
+      }
+    ],
+    "offsetBottom": "xxl"
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "LDC テイクアウト",
+        "wrap": true,
+        "size": "lg",
+        "color": "#666666",
+        "align": "center"
+      },
+      {
+        "type": "spacer",
+        "size": "xxl"
+      }
+    ],
+    "paddingTop": "xxl"
+  },
+  "styles": {
+    "footer": {
+      "separator": true
+    }
+  }
+}

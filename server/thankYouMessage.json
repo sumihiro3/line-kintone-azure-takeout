@@ -1,0 +1,61 @@
+{
+  "type": "bubble",
+  "header": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "ありがとうございました",
+        "weight": "bold",
+        "color": "#1DB446",
+        "size": "xl",
+        "align": "center"
+      },
+      {
+        "type": "text",
+        "text": "またのご利用をお待ちしております",
+        "weight": "regular",
+        "size": "md",
+        "wrap": true,
+        "offsetTop": "xl"
+      }
+    ]
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "image",
+        "url": "https://2.bp.blogspot.com/-IcQD1H8lx5c/VnKNfpw47BI/AAAAAAAA2EY/iVffCXI9_ug/s400/food_zei3_takeout.png",
+        "size": "4xl"
+      }
+    ],
+    "offsetBottom": "xxl"
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "LDC テイクアウト",
+        "wrap": true,
+        "size": "lg",
+        "color": "#666666",
+        "align": "center"
+      },
+      {
+        "type": "spacer",
+        "size": "xxl"
+      }
+    ],
+    "paddingTop": "xxl"
+  },
+  "styles": {
+    "footer": {
+      "separator": true
+    }
+  }
+}
