@@ -6,6 +6,21 @@ const consola = require('consola')
 const moment = require('moment')
 const PayTransaction = require('./pay_transaction')
 
+const SHIPPING_METHODS = [
+  {
+    id: 'shipping_01',
+    name: 'ウーハーイート',
+    amount: 2,
+    toDeliveryYmd: ''
+  },
+  {
+    id: 'shipping_02',
+    name: '出前便',
+    amount: 1,
+    toDeliveryYmd: ''
+  }
+]
+
 // Express router
 const router = new Router()
 router.use(bodyParser.urlencoded({ extended: true }))
@@ -20,7 +35,11 @@ router.get('/confirm', async (req, res, next) => {
   if (!shippingFeeAmount) {
     shippingFeeAmount = 0
   }
-  const shippingMethodId = req.query.shippingMethodId
+  let shippingMethodId = req.query.shippingMethodId
+  if (shippingMethodId) {
+    const method = getShippingMethodByID(shippingMethodId)
+    shippingMethodId = method.name
+  }
   consola.log(`orderId is ${orderId}`)
   consola.log(`transactionId is ${transactionId}`)
   consola.log(`shippingFeeAmount is ${shippingFeeAmount}`)
@@ -249,27 +268,25 @@ router.post('/shipping_methods', (req, res, next) => {
   // 配送日
   const deliveryDate = moment()
   const dt = deliveryDate.format('YYYYMMDD')
+  const shippingMethods = SHIPPING_METHODS.map((m) => {
+    m.toDeliveryYmd = dt
+    return m
+  })
   const response = {
     returnCode: '0000',
     returnMessage: 'OK',
     info: {
-      shippingMethods: [
-        {
-          id: 'shipping_01',
-          name: 'ウーハーイート',
-          amount: 2,
-          toDeliveryYmd: dt
-        },
-        {
-          id: 'shipping_02',
-          name: '出前便',
-          amount: 1,
-          toDeliveryYmd: dt
-        }
-      ]
+      shippingMethods
     }
   }
   res.json(response)
 })
+
+function getShippingMethodByID(id) {
+  const methods = SHIPPING_METHODS.filter((m) => {
+    return m.id === id
+  })
+  return methods.length > 0 ? methods[0] : null
+}
 
 module.exports = router
