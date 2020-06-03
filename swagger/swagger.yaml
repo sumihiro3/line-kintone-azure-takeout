@@ -6,7 +6,7 @@ info:
 externalDocs:
   description: "Event page"
   url: "https://linedevelopercommunity.connpass.com/event/176924/"
-host: "liff-kintone-questionary.herokuapp.com"
+host: "ldc-takeout.herokuapp.com"
 basePath: "/api"
 
 tags:
