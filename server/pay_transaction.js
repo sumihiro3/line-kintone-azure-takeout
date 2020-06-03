@@ -12,8 +12,8 @@ const PAY_STATE_PAYING = 'PAYING'
 const PAY_STATE_PAID = 'PAID'
 
 const DELIVERY_STATE_PREPARING = 'PREPARING'
-const DELIVERY_STATE_DELIVERING = 'DELIVERING'
-const DELIVERY_STATE_DELIVERED = 'DELIVERED'
+// const DELIVERY_STATE_READY = 'READY'
+// const DELIVERY_STATE_DELIVERED = 'DELIVERED'
 
 const CURRENCY_JPY = 'JPY'
 
@@ -196,12 +196,6 @@ module.exports = class PayTransaction {
     const orderId = this.orderId
     return new Promise(function(resolve, reject) {
       const record = {
-        // shipping_method: {
-        //   value: shippingMethod
-        // },
-        // shipping_fee_amount: {
-        //   value: shippingFeeAmount
-        // },
         pay_state: {
           value: PAY_STATE_PAYING
         }
