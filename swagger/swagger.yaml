@@ -49,7 +49,7 @@ paths:
           description: "Success"
         '400':
           description: "NG"
-  /updateDeliveryState:
+  /notifyOrderDeliveryState:
     post:
       tags:
         - "deliveryState"
