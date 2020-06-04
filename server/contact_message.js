@@ -12,6 +12,7 @@ const APP_ID = process.env.KINTONE_INQUIRY_APP_ID
     - language
     - message
     - category
+    - translation
     - reply_message
     - replied_at
     - order_id
@@ -46,7 +47,7 @@ module.exports = class ContactMessage {
   /*
         問い合わせ情報を登録する
     */
-  static registContactInfo(userId, message, category, orderId) {
+  static registContactInfo(userId, message, category, translation, orderId) {
     consola.log(`registContactInfo called!`)
     return new Promise(function(resolve, reject) {
       const app = APP_ID
@@ -60,6 +61,9 @@ module.exports = class ContactMessage {
         },
         category: {
           value: category
+        },
+        translation: {
+          value: translation
         },
         order_id: {
           value: orderId

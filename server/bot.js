@@ -9,6 +9,7 @@ const {
   TextAnalyticsClient,
   AzureKeyCredential
 } = require('@azure/ai-text-analytics')
+const nodeFetch = require('node-fetch')
 const PayTransaction = require('./pay_transaction')
 const OrderedItem = require('./ordered_item')
 const FollowedUser = require('./followed_user')
@@ -38,8 +39,8 @@ let payClient
 let useLinePayCheckout = false
 
 // Azure AI
-const endpoint = process.env.AZURE_API_URL
-const key = process.env.AZURE_ACCESS_KEY
+const endpoint = process.env.AZURE_TEXT_ANALYTICS_URL
+const key = process.env.AZURE_TEXT_ANALYTICS_KEY
 const textAnalyticsClient = new TextAnalyticsClient(
   endpoint,
   new AzureKeyCredential(key)
@@ -129,15 +130,19 @@ async function handlePostback(data, replyToken, userId) {
   } else if (parsedData.type === 'send') {
     const message = parsedData.data
     // 問い合わせ内容のポジネガ分析
-    const sentimentInput = [{ id: '1', language: 'ja', text: message }]
-    const sentimentResult = await textAnalyticsClient.analyzeSentiment(
-      sentimentInput
-    )
-    consola.log(sentimentResult)
+    const sentimentResult = await textAnalyticsClient.analyzeSentiment([
+      { id: '1', language: 'ja', text: message }
+    ])
     const sentiment = sentimentResult[0].sentiment
-    // TODO: Azureから問い合わせ内容の翻訳結果取得
+    // 問い合わせ内容の翻訳
+    const translationResult = await getTranslateText(message)
     // kintoneに問い合わせ内容と翻訳結果とポジネガ分析結果を登録
-    await ContactMessage.registContactInfo(userId, message, sentiment)
+    await ContactMessage.registContactInfo(
+      userId,
+      message,
+      sentiment,
+      translationResult
+    )
     // リッチメニューを設定
     const richmenuId = process.env.LINE_RICH_MENU_DEFAULT_ID
     lineApiClient.linkRichMenuToUser(userId, richmenuId)
@@ -303,6 +308,24 @@ function generateContactMessage(data) {
     altText: '問い合わせ内容確認',
     contents: msg
   }
+}
+
+async function getTranslateText(text) {
+  const params = [{ text }]
+  const url =
+    'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=ja'
+  const res = await nodeFetch(url, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': process.env.AZURE_TRANSLATOR_KEY,
+      'Content-type': 'application/json',
+      'X-ClientTraceId': uuidv4().toString(),
+      'Ocp-Apim-Subscription-Region': 'eastasia'
+    },
+    body: JSON.stringify(params)
+  })
+  const json = await res.json()
+  return json[0].translations[0].text
 }
 
 // 注文情報を生成しLINE Pay Request API を実行して決済処理を始める
