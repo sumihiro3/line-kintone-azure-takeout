@@ -38,14 +38,6 @@ consola.info('follow Flex Message', followMessage)
 let payClient
 let useLinePayCheckout = false
 
-// Azure AI
-const endpoint = process.env.AZURE_TEXT_ANALYTICS_URL
-const key = process.env.AZURE_TEXT_ANALYTICS_KEY
-const textAnalyticsClient = new TextAnalyticsClient(
-  endpoint,
-  new AzureKeyCredential(key)
-)
-
 router.post('/webhook', line.middleware(lineConfig), (req, res) => {
   consola.log('Bot webhook called!')
   if (!lineApiClient) {
@@ -129,20 +121,31 @@ async function handlePostback(data, replyToken, userId) {
     replyMessage = generateCustomerSupportMessage()
   } else if (parsedData.type === 'send') {
     const message = parsedData.data
-    // 問い合わせ内容のポジネガ分析
-    const sentimentResult = await textAnalyticsClient.analyzeSentiment([
-      { id: '1', language: 'ja', text: message }
-    ])
-    const sentiment = sentimentResult[0].sentiment
-    // 問い合わせ内容の翻訳
-    const translationResult = await getTranslateText(message)
-    // kintoneに問い合わせ内容と翻訳結果とポジネガ分析結果を登録
-    await ContactMessage.registContactInfo(
-      userId,
-      message,
-      sentiment,
-      translationResult
-    )
+    consola.log(process.env.USE_AZURE_AI)
+    if (process.env.USE_AZURE_AI === 'true') {
+      // 問い合わせ内容のポジネガ分析
+      const endpoint = process.env.AZURE_TEXT_ANALYTICS_URL
+      const key = process.env.AZURE_TEXT_ANALYTICS_KEY
+      const textAnalyticsClient = new TextAnalyticsClient(
+        endpoint,
+        new AzureKeyCredential(key)
+      )
+      const sentimentResult = await textAnalyticsClient.analyzeSentiment([
+        { id: '1', language: 'ja', text: message }
+      ])
+      const sentiment = sentimentResult[0].sentiment
+      // 問い合わせ内容の翻訳
+      const translationResult = await getTranslateText(message)
+      // kintoneに問い合わせ内容と翻訳結果とポジネガ分析結果を登録
+      await ContactMessage.registContactInfo(
+        userId,
+        message,
+        sentiment,
+        translationResult
+      )
+    } else {
+      await ContactMessage.registContactInfo(userId, message)
+    }
     // リッチメニューを設定
     const richmenuId = process.env.LINE_RICH_MENU_DEFAULT_ID
     lineApiClient.linkRichMenuToUser(userId, richmenuId)
