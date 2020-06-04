@@ -169,4 +169,33 @@ function generateThankYouMessage() {
     contents: msg
   }
 }
+
+router.post('/getOrderTransactionInfo', async (req, res) => {
+  consola.log('POST getOrderTransactionInfo called!')
+  const data = req.body
+  consola.log('Received Data', data)
+  const orderId = data.orderId
+  const userId = data.userId
+  let apiResult = {
+    code: '0000',
+    message: 'SUCCESS'
+  }
+  try {
+    const transaction = await PayTransaction.getTransaction(orderId)
+    if (userId !== transaction.userId) {
+      throw new Error('Invalid User Request')
+    }
+    apiResult.transactionInfo = transaction
+  } catch (error) {
+    consola.error('getOrderTransactionInfo Failed...', error)
+    consola.error('Error Object', JSON.stringify(error.error))
+    apiResult = {
+      code: '9999',
+      message: 'FAILED'
+    }
+  } finally {
+    res.status(200).json(apiResult)
+  }
+})
+
 module.exports = router

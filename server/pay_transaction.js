@@ -74,14 +74,12 @@ module.exports = class PayTransaction {
     tran.transactionId = record.transaction_id.value
     tran.amount = parseInt(record.amount.value)
     tran.payState = record.pay_state.value
-    // tran.shippingMethod = record.shipping_method.value
     if (record.ordered_at.value) {
       tran.orderedAt = moment(record.ordered_at.value)
     }
     if (record.paid_at.value) {
       tran.paidAt = moment(record.paid_at.value)
     }
-    // tran.shippingFeeAmount = parseInt(record.shipping_fee_amount.value)
     tran.kintoneRecordId = record.$id.value
     tran.deliveryState = record.delivery_state.value
     if (record.delivered_at.value) {

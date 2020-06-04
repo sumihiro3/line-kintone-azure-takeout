@@ -1,3 +1,5 @@
+import consola from 'consola'
+
 export default function({ $axios, redirect }) {
   $axios.onRequest((config) => {
     config.headers.common['Access-Control-Allow-Origin'] = '*'
@@ -5,7 +7,8 @@ export default function({ $axios, redirect }) {
     config.headers.common['X-Requested-With'] = 'XMLHttpRequest'
   })
   $axios.onError((error) => {
-    if (error.response.status === 500) {
+    consola.warn('Error', error)
+    if (error.response && error.response.status === 500) {
       redirect('/sorry')
     }
   })

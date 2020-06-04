@@ -92,14 +92,17 @@ function generateReceiptMessage(transaction) {
   consola.log(`function generateReceiptMessage called!`)
   const messageText = '領収書'
   const transactionId = transaction.transactionId
-  let amount = transaction.amount
-  if (transaction.shippingFeeAmount && transaction.shippingMethod) {
-    amount += transaction.shippingFeeAmount
-  } else {
-    transaction.shippingFeeAmount = 0
-  }
+  const orderId = transaction.orderId
+  const showTransactionInfoUrl = `https://liff.line.me/${process.env.LIFF_ID}/?o=${orderId}`
+  consola.log('showTransactionInfoUrl', showTransactionInfoUrl)
+  const amount = transaction.amount
+  // if (transaction.shippingFeeAmount && transaction.shippingMethod) {
+  //   amount += transaction.shippingFeeAmount
+  // } else {
+  //   transaction.shippingFeeAmount = 0
+  // }
   const totalAmount = `${amount} 円`
-  const shippingFeeAmount = `${transaction.shippingFeeAmount} 円`
+  // const shippingFeeAmount = `${transaction.shippingFeeAmount} 円`
   // お買い上げ金額
   const productRows = [
     {
@@ -147,7 +150,9 @@ function generateReceiptMessage(transaction) {
         },
         {
           type: 'text',
-          text: 'お買い上げありがとうございました！',
+          text:
+            'お買い上げありがとうございました。商品の準備に30分ほどかかります。',
+          wrap: true,
           size: 'sm',
           margin: 'sm'
         },
@@ -162,34 +167,34 @@ function generateReceiptMessage(transaction) {
           spacing: 'sm',
           contents: productRows
         },
-        {
-          type: 'box',
-          layout: 'vertical',
-          margin: 'xxl',
-          spacing: 'sm',
-          contents: [
-            {
-              type: 'box',
-              layout: 'horizontal',
-              contents: [
-                {
-                  type: 'text',
-                  text: '送料',
-                  size: 'sm',
-                  color: '#555555',
-                  flex: 0
-                },
-                {
-                  type: 'text',
-                  text: shippingFeeAmount,
-                  size: 'sm',
-                  color: '#111111',
-                  align: 'end'
-                }
-              ]
-            }
-          ]
-        },
+        // {
+        //   type: 'box',
+        //   layout: 'vertical',
+        //   margin: 'xxl',
+        //   spacing: 'sm',
+        //   contents: [
+        //     {
+        //       type: 'box',
+        //       layout: 'horizontal',
+        //       contents: [
+        //         {
+        //           type: 'text',
+        //           text: '送料',
+        //           size: 'sm',
+        //           color: '#555555',
+        //           flex: 0
+        //         },
+        //         {
+        //           type: 'text',
+        //           text: shippingFeeAmount,
+        //           size: 'sm',
+        //           color: '#111111',
+        //           align: 'end'
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // },
         {
           type: 'separator',
           margin: 'xxl'
@@ -241,6 +246,23 @@ function generateReceiptMessage(transaction) {
               align: 'end'
             }
           ]
+        }
+      ]
+    },
+    footer: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'button',
+          style: 'primary',
+          height: 'sm',
+          margin: 'xl',
+          action: {
+            type: 'uri',
+            label: '準備状況を確認する',
+            uri: showTransactionInfoUrl
+          }
         }
       ]
     },

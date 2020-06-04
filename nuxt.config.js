@@ -9,7 +9,7 @@ module.exports = {
    ** Headers of the page
    */
   head: {
-    title: 'LINE × kintoneでアンケートシステムを作ってみよう！',
+    title: 'LINE×kintone×Azureでテイクアウトアプリを作ってみよう！',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -21,18 +21,18 @@ module.exports = {
       {
         hid: 'og:site_name',
         property: 'og:site_name',
-        content: 'LINE × kintoneでアンケートシステムを作ってみよう！'
+        content: 'LINE×kintone×Azureでテイクアウトアプリを作ってみよう！'
       },
       { hid: 'og:type', property: 'og:type', content: 'website' },
       {
         hid: 'og:url',
         property: 'og:url',
-        content: 'https://liff-kintone-questionary.herokuapp.com/'
+        content: process.env.API_URL
       },
       {
         hid: 'og:title',
         property: 'og:title',
-        content: 'LINE × kintoneでアンケートシステムを作ってみよう！'
+        content: 'LINE×kintone×Azureでテイクアウトアプリを作ってみよう！'
       },
       {
         hid: 'og:description',
@@ -42,7 +42,7 @@ module.exports = {
       {
         hid: 'og:image',
         property: 'og:image',
-        content: 'https://liff-kintone-questionary.herokuapp.com/icon.png'
+        content: 'https://ldc-takeout.herokuapp.com/icon.png'
       }
     ],
     script: [
@@ -56,11 +56,11 @@ module.exports = {
   },
   // PWA Setting
   manifest: {
-    name: 'LINE x kintone アンケートシステム',
+    name: 'LDC テイクアウトアプリ',
     lang: 'ja',
-    short_name: 'LINE x kintone アンケート',
-    title: 'LINE x kintone アンケートシステム',
-    description: 'LINE × kintoneでアンケートシステムを作ってみよう！',
+    short_name: 'LDC テイクアウト',
+    title: 'LDC テイクアウト',
+    description: 'LINE×kintone×Azureでテイクアウトアプリを作ってみよう！',
     theme_color: '#ffffff',
     background_color: '#ffffff'
   },

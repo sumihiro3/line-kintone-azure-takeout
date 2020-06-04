@@ -10,10 +10,13 @@
             | LINE
           b-nav-item(href="https://kintone.cybozu.co.jp/" target="_blank")
             | kintone
+          b-nav-item(href="https://azure.microsoft.com/ja-jp/" target="_blank")
+            | Microsoft Azure
     b-row.p-4
       | &nbsp;
     b-row
-      nuxt
+      b-container(fluid="md")
+        nuxt
     b-overlay(
       :show="showProgressCircle"
       z-index="9999"
@@ -35,7 +38,7 @@ export default {
   data() {
     return {
       fixed: false,
-      title: 'アンケートシステム'
+      title: 'LDC テイクアウト'
     }
   },
   computed: {
