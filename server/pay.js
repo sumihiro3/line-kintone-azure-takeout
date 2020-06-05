@@ -96,13 +96,7 @@ function generateReceiptMessage(transaction) {
   const showTransactionInfoUrl = `https://liff.line.me/${process.env.LIFF_ID}/?o=${orderId}`
   consola.log('showTransactionInfoUrl', showTransactionInfoUrl)
   const amount = transaction.amount
-  // if (transaction.shippingFeeAmount && transaction.shippingMethod) {
-  //   amount += transaction.shippingFeeAmount
-  // } else {
-  //   transaction.shippingFeeAmount = 0
-  // }
   const totalAmount = `${amount} 円`
-  // const shippingFeeAmount = `${transaction.shippingFeeAmount} 円`
   // お買い上げ金額
   const productRows = [
     {
