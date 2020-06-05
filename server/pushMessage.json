@@ -6,12 +6,12 @@
     "contents": [
       {
         "type": "image",
-        "url": "https://liff-kintone-questionary.herokuapp.com/images/logo_line.png",
+        "url": "https://ldc-takeout.herokuapp.com/images/logo_line.png",
         "margin": "none"
       },
       {
         "type": "image",
-        "url": "https://liff-kintone-questionary.herokuapp.com/images/logo_kintone.png",
+        "url": "https://ldc-takeout.herokuapp.com/images/logo_kintone.png",
         "margin": "none"
       }
     ]
@@ -43,28 +43,6 @@
         ]
       }
     ]
-  },
-  "footer": {
-    "type": "box",
-    "layout": "vertical",
-    "spacing": "sm",
-    "contents": [
-      {
-        "type": "button",
-        "style": "primary",
-        "height": "sm",
-        "action": {
-          "type": "uri",
-          "label": "もう一度アンケートに回答する",
-          "uri": "https://google.co.jp"
-        }
-      },
-      {
-        "type": "spacer",
-        "size": "sm"
-      }
-    ],
-    "flex": 0
   },
   "styles": {
     "header": {
