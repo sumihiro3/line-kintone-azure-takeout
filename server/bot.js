@@ -361,16 +361,8 @@ async function doPayRequest(userId, itemId, quantity, replyToken) {
     return lineApiClient.replyMessage(replyToken, replyMessage)
   }
   try {
-    // Save ordered item information to kintone
-    await registOrderedItems(orderId, userId, paymentInfo)
-    // Save pay transaction information to kintone
-    const tran = await registPayTransaction(
-      orderId,
-      userId,
-      paymentInfo,
-      transactionId
-    )
-    consola.log('Registered transaction info', tran)
+    // Save Order info and Pay transaction information to kintone
+    await registOrderAndTransaction(orderId, userId, paymentInfo, transactionId)
     // Generate payment message
     replyMessage = generatePayMessage(
       transactionId,
@@ -384,6 +376,38 @@ async function doPayRequest(userId, itemId, quantity, replyToken) {
     consola.error('Error at Kintone API...', error)
     return lineApiClient.replyMessage(replyToken, replyMessage)
   }
+}
+
+async function registOrderAndTransaction(
+  orderId,
+  userId,
+  paymentInfo,
+  transactionId
+) {
+  consola.log(
+    'registOrderAndTransaction function called!',
+    orderId,
+    userId,
+    transactionId
+  )
+  consola.log('paymentInfo :', JSON.stringify(paymentInfo))
+  const product = paymentInfo.packages[0].products[0]
+  const title = product.name
+  const amount = parseInt(paymentInfo.packages[0].amount)
+  const orderItem = {
+    itemId: product.id,
+    itemName: product.name,
+    unitPrice: product.price,
+    quantity: product.quantity
+  }
+  await PayTransaction.registOrderAndTransaction(
+    orderId,
+    userId,
+    title,
+    amount,
+    transactionId,
+    [orderItem]
+  )
 }
 
 function generatePaymentInfo(itemId, quantity, orderId) {
@@ -448,51 +472,6 @@ function calcTotalPrice(item, quantity) {
   consola.log('calcTotalPrice function called!:', item, quantity)
   const totalPrice = Math.floor(item.unitPrice * quantity)
   return totalPrice
-}
-
-// 決済情報をkintone に保存する
-async function registPayTransaction(
-  orderId,
-  userId,
-  paymentInfo,
-  transactionId
-) {
-  consola.log(
-    'registPayTransaction function called!',
-    orderId,
-    userId,
-    transactionId
-  )
-  consola.log('paymentInfo :', JSON.stringify(paymentInfo))
-  let title = paymentInfo.packages[0].products[0].name
-  if (paymentInfo.packages[0].products.length > 1) {
-    title = title + ' 他'
-  }
-  const amount = parseInt(paymentInfo.packages[0].amount)
-  const tran = await PayTransaction.registOrderedTransaction(
-    orderId,
-    userId,
-    title,
-    amount,
-    transactionId
-  )
-  return tran
-}
-
-// 注文商品情報をkintone に保存する
-async function registOrderedItems(orderId, userId, paymentInfo) {
-  consola.log('registOrderedItems function called!', orderId, userId)
-  consola.log('paymentInfo :', JSON.stringify(paymentInfo))
-  const product = paymentInfo.packages[0].products[0]
-  consola.log(`ordered item : ${JSON.stringify(product)}`)
-  await OrderedItem.registOrderedItem(
-    orderId,
-    userId,
-    product.id,
-    product.name,
-    product.price,
-    product.quantity
-  )
 }
 
 // 決済開始用メッセージを生成する
