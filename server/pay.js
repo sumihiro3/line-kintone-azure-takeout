@@ -161,34 +161,6 @@ function generateReceiptMessage(transaction) {
           spacing: 'sm',
           contents: productRows
         },
-        // {
-        //   type: 'box',
-        //   layout: 'vertical',
-        //   margin: 'xxl',
-        //   spacing: 'sm',
-        //   contents: [
-        //     {
-        //       type: 'box',
-        //       layout: 'horizontal',
-        //       contents: [
-        //         {
-        //           type: 'text',
-        //           text: '送料',
-        //           size: 'sm',
-        //           color: '#555555',
-        //           flex: 0
-        //         },
-        //         {
-        //           type: 'text',
-        //           text: shippingFeeAmount,
-        //           size: 'sm',
-        //           color: '#111111',
-        //           align: 'end'
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // },
         {
           type: 'separator',
           margin: 'xxl'
