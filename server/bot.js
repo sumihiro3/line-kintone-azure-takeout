@@ -11,7 +11,6 @@ const {
 } = require('@azure/ai-text-analytics')
 const nodeFetch = require('node-fetch')
 const PayTransaction = require('./pay_transaction')
-const OrderedItem = require('./ordered_item')
 const FollowedUser = require('./followed_user')
 const ContactMessage = require('./contact_message')
 
