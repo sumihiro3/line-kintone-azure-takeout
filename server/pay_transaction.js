@@ -6,7 +6,7 @@ const DOMAIN_NAME = process.env.KINTONE_DOMAIN_NAME
 const KINTONE_USER_ID = process.env.KINTONE_USER_ID
 const KINTONE_USER_PASSWORD = process.env.KINTONE_USER_PASSWORD
 const APP_ID = process.env.KINTONE_TRANSACTION_APP_ID
-const API_URL = process.env.API_URL
+const APP_URL = process.env.API_URL
 
 const PAY_STATE_ORDERED = 'ORDERED'
 const PAY_STATE_PAYING = 'PAYING'
@@ -161,8 +161,8 @@ module.exports = class PayTransaction {
         delivery_state: {
           value: DELIVERY_STATE_PREPARING
         },
-        heroku_url: {
-          value: API_URL
+        app_url: {
+          value: APP_URL
         }
       }
       consola.log('Transaction', record)
