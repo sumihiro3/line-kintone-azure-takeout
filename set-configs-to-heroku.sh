@@ -2,7 +2,6 @@
 
 # set configs to heroku loading environment values in .env file
 . .env
-heroku config:set API_URL=${API_URL}
 heroku config:set USE_VCONSOLE=${USE_VCONSOLE}
 heroku config:set SKIP_LOGIN=${SKIP_LOGIN}
 heroku config:set LIFF_ID=${LIFF_ID}
@@ -22,6 +21,11 @@ heroku config:set USE_AZURE_AI=${USE_AZURE_AI}
 heroku config:set AZURE_TEXT_ANALYTICS_URL=${AZURE_TEXT_ANALYTICS_URL}
 heroku config:set AZURE_TEXT_ANALYTICS_KEY=${AZURE_TEXT_ANALYTICS_KEY}
 heroku config:set AZURE_TRANSLATOR_KEY=${AZURE_TRANSLATOR_KEY}
+
+heroku config:set API_URL=$(heroku info -s | grep web_url | cut -d= -f2 | sed -e 's/\/$//')
+heroku config:set NPM_CONFIG_PRODUCTION=false
+heroku config:set HOST=0.0.0.0
+heroku config:set NODE_ENV=production
 
 # show configs
 heroku config
