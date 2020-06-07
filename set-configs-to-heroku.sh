@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # set configs to heroku loading environment values in .env file
-. .env
+. ./.env
 heroku config:set USE_VCONSOLE=${USE_VCONSOLE}
 heroku config:set SKIP_LOGIN=${SKIP_LOGIN}
 heroku config:set LIFF_ID=${LIFF_ID}
