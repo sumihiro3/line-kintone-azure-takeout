@@ -31,7 +31,7 @@
     "express": "^4.16.4",
     "express-promise-router": "^3.0.3",
     "lossless-json": "^1.0.4",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "node-fetch": "^2.6.0",
     "nuxt": "^2.0.0",
     "query-string": "^6.12.1",
